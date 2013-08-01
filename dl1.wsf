@@ -1,0 +1,114 @@
+<job id="dlitems">	
+	<script type="text/javascript">
+    		var html = new ActiveXObject("htmlfile");
+    		// 1.
+    		html.write('<html></html>');
+  
+    		var window = html.parentWindow;
+    		var navigator = window.navigator;
+    		var document = window.document;
+    		var location = document.location;
+ 
+    		// 2.
+    		window.ActiveXObject = ActiveXObject;
+ 
+    		// 3.
+    		var setTimeout = function(func, delay) { return window.setTimeout(func, delay) };
+	</script>
+	<script type="text/javascript" src="json2.js" />
+	<script type="text/javascript" src="jsonlint.js" />
+	<script type="text/javascript" src="jquery-1.9.1.js" />
+	<script type="text/javascript">
+		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP.6.0");
+
+		var url = "https://api.guildwars2.com/v1/item_details.json?item_id=";
+		var url_indx = "https://api.guildwars2.com/v1/items.json";
+		var JSONFileName = "itemsnew.json";
+		var idName = "item_id";
+
+		//var url = "https://api.guildwars2.com/v1/recipe_details.json?recipe_id=";
+		//var url_indx = "https://api.guildwars2.com/v1/recipes.json";
+		//var JSONFileName = "recipesnew.json";
+		//var idName = "recipe_id";
+
+	function _request(args)
+	{
+		try {
+			_HttpGet(args);
+		}
+		catch (e)
+		{	
+			WScript.Echo ("Error: " + e.message);	
+		}
+		var outputString = xmlhttp.responseText;		
+		
+         	return(outputString);
+	};
+
+	function _HttpGet(args)
+	{
+		WScript.Echo(url + args);
+		xmlhttp.open("GET", url + args, false);				
+		xmlhttp.send();	
+	};
+
+		function IDSort(first, second)
+		{
+			if (first == second)
+				return 0;
+			if (first < second)
+				return -1;
+			else
+				return 1;
+		}
+
+		function GenerateJSONFile(items, idName, JSONFileName)
+		{
+			var element;
+			var itemJSONString;
+			fso = new ActiveXObject("Scripting.FileSystemObject");
+			s = fso.CreateTextFile(JSONFileName, true, true);
+			s.write("{");
+
+			for (var i=0;i<items.length;i++)
+			{
+				itemJSONString = _request(items[i]);
+				try {
+					element = JSON.parse(itemJSONString);
+				}
+				catch(err)
+				{
+					WScript.Echo(err.message);
+					throw err;
+				}
+				//s.Write("\"" + element[idName] + "\": ");
+				if (typeof element[idName] === "undefined")
+				{
+					WScript.Echo ("Error getting item detail for item ID " + items[i]);
+					WScript.Quit();
+				}
+				s.Write("\"" + items[i] + "\": ");
+				if (i < items.length - 1) s.Write(itemJSONString + ",");
+				else s.Write(itemJSONString + "}");
+			}
+			s.Close();
+		}
+
+		var $ = window.$;
+    		// 4.
+    		$.support.cors = true;
+		$.ajaxSetup({
+			async: false
+		});
+		$.getJSON(url_indx, function(data) {
+			$.each(data,function(j,items){
+				items = items.sort(IDSort);
+				GenerateJSONFile(items, idName, JSONFileName);
+			});
+ 		})
+		.error (function( jqxhr, textStatus, error ) {;
+  			var err = textStatus + ', ' + error;			
+  			WScript.Echo( "Request Failed: " + err);
+		});
+	</script>
+</job>

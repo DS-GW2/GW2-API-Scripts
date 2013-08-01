@@ -1,0 +1,39 @@
+<job id="testitems">	
+	<script type="text/javascript" src="json2.js" />
+	<script type="text/javascript" src="jsonlint.js" />
+	<script type="text/javascript">
+xmlhttp = new ActiveXObject("Msxml2.XMLHTTP.6.0");
+
+	function _request(args)
+	{
+		try {
+			_HttpGet(args);
+		}
+		catch (e)
+		{	
+			WScript.Echo ("Error: " + e.message);	
+		}
+		var outputString = xmlhttp.responseText;		
+		
+         	return(outputString);
+	};
+
+	function _HttpGet(args)
+	{
+		WScript.Echo("http://localhost/recipe_details.json");
+		xmlhttp.open("GET", "http://localhost/recipe_details.json", false);				
+		xmlhttp.send();	
+	};
+
+var itemJSONString = _request("");
+//var itemJSONString = '{"string":"value", "boolean": true"}';
+	try {
+		WScript.Echo("Parsing...");
+		var result = jsonlint.parse(itemJSONString);
+	}
+	catch(err)
+	{
+		WScript.Echo(err.message);
+	}
+	</script>
+</job>

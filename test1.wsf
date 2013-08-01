@@ -1,0 +1,19 @@
+<job id="gw2events">
+	<Script type="text/javascript" src="json2.js" />
+        <Script type="text/javascript" src="gw2events.js" />
+	<script type="text/javascript">
+
+		var api = new GW2EVENTS();
+		var eventNames = api.EventNames();
+		var worldNames = api.WorldNames();
+		var mapNames = api.MapNames();
+
+
+		WScript.Echo(api.Name(eventNames, "5282B66A-126F-4DA4-8E9D-0D9802227B6D"));
+		//for (var i in eventNames)
+		//{
+		//	WScript.Echo(eventNames[i].id);
+		//}
+
+	</script>
+</job>
