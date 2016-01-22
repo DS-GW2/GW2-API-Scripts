@@ -85,7 +85,7 @@
 				if (typeof element[idName] === "undefined")
 				{
 					WScript.Echo ("Error getting item detail for item ID " + items[i]);
-					WScript.Quit();
+					continue;
 				}
 				s.Write("\"" + items[i] + "\": ");
 				if (i < items.length - 1) s.Write(itemJSONString + ",");

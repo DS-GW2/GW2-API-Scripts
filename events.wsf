@@ -3,20 +3,58 @@
         <Script type="text/javascript" src="gw2events.js" />
 	<script type="text/javascript">
 
-		function CheckKarkaQueen(world)
+		function CheckActive(world)
 		{
-			var queenEvents = [ "5282B66A-126F-4DA4-8E9D-0D9802227B6D",
+			var checkEvents = [ "5282B66A-126F-4DA4-8E9D-0D9802227B6D",  // Defeat the Karka Queen Threatening the settlements
 						"F479B4CF-2E11-457A-B279-90822511B53B",
 						"E1CC6E63-EFFE-4986-A321-95C89EA58C07",
 						"4CF7AA6E-4D84-48A6-A3D1-A91B94CCAD56" ];
 
 
-			for (var i in queenEvents)
+			for (var i in checkEvents)
 			{
-				var events = api.Events(world, queenEvents[i]);
+				var events = api.Events(world, checkEvents[i]);
 				for (var j in events) {
 					if (events[j].state == "Active") {
-						WScript.Echo("Karka Queen " + api.WorldName(world) + " " + events[j].state + " \"" + api.EventName(queenEvents[i]) + "\"");
+						WScript.Echo("Active Event " + api.WorldName(world) + " " + events[j].state + " \"" + api.EventName(checkEvents[i]) + "\"");
+					}
+				}
+			}
+		
+		}
+
+
+		function CheckNotActive(world)
+		{
+			var events = [ "10F87D71-E2DA-4EA2-981D-15181CE0D349" ]; // Reclaim the settlement by burning out the karka nets
+
+
+			for (var i in events)
+			{
+				var events1 = api.Events(world, events[i]);
+				for (var j in events1) {
+					if (events1[j].state != "Active") {
+						WScript.Echo("Not Active " + api.WorldName(world) + " " + events1[j].state + " \"" + api.EventName(events[i]) + "\"");
+					}
+				}
+			}
+		
+		}
+
+		function CheckSuccess(world)
+		{
+			var events = [ //"C3A1BAE2-E7F2-4929-A3AA-92D39283722C",	// Capture the camps before more centaurs arrive
+					"21A897DF-4CC0-4E5E-B8E4-3923CD7BDECB"   ];      // Break Centaur worker morale to prevent bridge repairs
+				       //"82314FEA-5FAF-4A18-9105-2AAC1A507D6A"  ];   // Stop the centaurs from retaking their camps
+				       //"7FC9708B-F219-4CC0-94DB-594B30DF697C"	 ]; // Defend the Lone Post from the Risen hordes
+
+
+			for (var i in events)
+			{
+				var events1 = api.Events(world, events[i]);
+				for (var j in events1) {
+					if (events1[j].state != "Fail" && events1[j].state != "Inactive") {
+						WScript.Echo("Success " + api.WorldName(world) + " " + events1[j].state + " \"" + api.EventName(events[i]) + "\"");
 					}
 				}
 			}
@@ -28,7 +66,7 @@
 		var worldNames = api.WorldNames();
 		var mapNames = api.MapNames();
 
-		var eventIdToCheck = "0723E056-E665-439F-99B7-20385442AD4E"; // "Protect the Cathedral of Zephyrs." - Dwayna
+		//var eventIdToCheck = "0723E056-E665-439F-99B7-20385442AD4E"; // "Protect the Cathedral of Zephyrs." - Dwayna
 
 		//var eventIdToCheck = "0372874E-59B7-4A8F-B535-2CF57B8E67E4"; // "Kill the Corrupted High Priestess" - Lyssa
 
@@ -42,7 +80,7 @@
 
 		//var eventIdToCheck = "A1182080-2599-4ACC-918E-A3275610602B"; // "Hold the Gates of Flame against waves of Flame Legion." - CoF
 
-		//var eventIdToCheck = "589B1C41-DD96-4AEE-8A3A-4CC607805B05"; // "Help the Pact hold the Altar of Betrayal from the Risen." - Balthazar
+		var eventIdToCheck = "589B1C41-DD96-4AEE-8A3A-4CC607805B05"; // "Help the Pact hold the Altar of Betrayal from the Risen." - Balthazar
 		
 		for (var i in worldNames) {
 			if (api.IsUSWorld(worldNames[i])) {
@@ -53,7 +91,9 @@
 					}				
 				}
 
-				CheckKarkaQueen(worldNames[i].id);
+				CheckActive(worldNames[i].id);
+				CheckNotActive(worldNames[i].id);
+				CheckSuccess(worldNames[i].id);
 			}
 		}
 	</script>
